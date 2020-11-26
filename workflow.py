@@ -1,15 +1,17 @@
 import os
-import shutil
 
 from virtool_workflow import startup, step, cleanup
-from utils import get_sample_params
+
+import utils
 
 
 @startup
-async def check_db(params, temp_path, sample_id):
-    get_sample_params()
+async def check_db(params, temp_path):
+    """
+    Instantiates params fixture
 
-    temp_sample_path = temp_path / sample_id
+    """
+    temp_sample_path = temp_path / params["sample_id"]
 
     params.update({
         "temp_sample_path": temp_sample_path,
@@ -31,8 +33,41 @@ async def make_sample_dir(params, run_in_executor):
 
 
 @step
-async def copy_files():
-    pass
+async def copy_files(params, data_path, run_in_executor, proc, db):
+    """
+    Copy the files from the files directory to the nascent sample directory.
+
+    """
+    files = params["files"]
+    sample_id = params["sample_id"]
+
+    paths = [data_path / "file" / file["id"] for file in files]
+
+    sizes = await run_in_executor(
+        utils.copy_files_to_sample,
+        paths,
+        params["temp_sample_path"],
+        proc
+    )
+
+    raw = list()
+
+    for index, file in enumerate(files):
+        name = f"reads_{index + 1}.fq.gz"
+
+        raw.append({
+            "name": name,
+            "download_url": f"/download/samples/{sample_id}/{name}",
+            "size": sizes[index],
+            "from": file,
+            "raw": True
+        })
+
+    await db.samples.update_one({"_id": sample_id}, {
+        "$set": {
+            "files": raw
+        }
+    })
 
 
 @step
