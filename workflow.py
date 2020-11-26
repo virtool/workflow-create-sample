@@ -1,7 +1,8 @@
 import os
+import shutil
 
 from virtool_workflow import startup, step, cleanup
-from virtool_workflow.execute import run_subprocess
+from virtool_workflow.execute import run_in_executor
 import virtool_core.samples.utils
 
 import utils
@@ -111,20 +112,36 @@ async def parse_fastqc(params, run_in_executor, db):
 
 
 @step
-async def upload():
-    pass
+async def upload(params, run_in_executor):
+    await run_in_executor(
+        shutil.copytree,
+        params["temp_sample_path"],
+        params["sample_path"]
+    )
 
 
 @step
-async def clean_watch():
-    pass
+async def clean_watch(params, db):
+    """ Remove the original read files from the files directory """
+    file_ids = [f["id"] for f in params["files"]]
+    await db.files.delete_many({"_id": {"$in": file_ids}})
 
 
 @cleanup
-async def delete_sample():
-    pass
+async def delete_sample(params, db, run_in_executor):
+    await db.samples.delete_one({"_id": params["sample_id"]})
+
+    try:
+        await run_in_executor(shutil.rmtree, params["sample_path"])
+    except FileNotFoundError:
+        pass
 
 
 @cleanup
-async def release_files():
-    pass
+async def release_files(params, db):
+    for file_id in params["files"]:
+        await db.files.update_many({"_id": file_id}, {
+            "$set": {
+                "reserved": False
+            }
+        })
