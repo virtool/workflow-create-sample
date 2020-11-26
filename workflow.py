@@ -89,8 +89,25 @@ async def fastqc(params, run_subprocess, proc):
 
 
 @step
-async def parse_fastqc():
-    pass
+async def parse_fastqc(params, run_in_executor, db):
+    """
+    Capture the desired data from the FastQC output. The data is added to the samples database
+    in the main run() method
+
+
+    """
+    qc = await run_in_executor(
+        utils.parse_fastqc,
+        params["fastqc_path"],
+        params["temp_sample_path"]
+    )
+
+    await db.samples.update_one({"_id": params["sample_id"]}, {
+        "$set": {
+            "quality": qc,
+            "ready": True
+        }
+    })
 
 
 @step
