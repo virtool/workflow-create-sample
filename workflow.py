@@ -1,23 +1,19 @@
 import os
 import shutil
 
-from virtool_workflow import startup, step, cleanup, fixture
+from virtool_workflow import startup, step, cleanup
+from utils import get_sample_params
 
 
 @startup
-async def check_db(params, db, temp_path, sample_path, sample_id):
-    document = await db.samples.find_one(sample_id)
+async def check_db(params, temp_path, sample_id):
+    get_sample_params()
 
     temp_sample_path = temp_path / sample_id
 
     params.update({
-        "sample_id": sample_id,
-        "sample_path": sample_path,
-        "document": document,
-        "fastqc_path": temp_sample_path / "fastqc",
-        "files": document["files"],
         "temp_sample_path": temp_sample_path,
-        "paired": document["paired"]
+        "fastqc_path": temp_sample_path / "fastqc"
     })
 
 
