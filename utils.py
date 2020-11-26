@@ -36,3 +36,16 @@ def copy_or_compress(path, target, proc):
         shutil.copyfile(path, target)
     else:
         virtool_core.utils.compress_file(path, target, proc)
+
+
+async def run_fastqc(run_subprocess, proc, read_paths, fastqc_path):
+    command = [
+        "fastqc",
+        "-f", "fastq",
+        "-o", fastqc_path,
+        "-t", str(proc),
+        "--extract",
+        *read_paths
+    ]
+
+    await run_subprocess(command)

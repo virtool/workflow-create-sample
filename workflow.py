@@ -1,6 +1,8 @@
 import os
 
 from virtool_workflow import startup, step, cleanup
+from virtool_workflow.execute import run_subprocess
+import virtool_core.samples.utils
 
 import utils
 
@@ -8,7 +10,7 @@ import utils
 @startup
 async def check_db(params, temp_path):
     """
-    Instantiates params fixture
+    Instantiates params fixture.
 
     """
     temp_sample_path = temp_path / params["sample_id"]
@@ -71,8 +73,19 @@ async def copy_files(params, data_path, run_in_executor, proc, db):
 
 
 @step
-async def fastqc():
-    pass
+async def fastqc(params, run_subprocess, proc):
+    """
+    Runs FastQC on the renamed, trimmed read files.
+
+    """
+    read_paths = virtool_core.samples.utils.join_read_path(params["temp_sample_path"], params["paired"])
+
+    await utils.run_fastqc(
+        run_subprocess,
+        proc,
+        read_paths,
+        params["fastqc_path"]
+    )
 
 
 @step
