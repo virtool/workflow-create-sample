@@ -5,7 +5,7 @@ from virtool_workflow_runtime.db import VirtoolDatabase
 
 @fixture
 def db():
-    return VirtoolDatabase(db_name(), db_connection_string)
+    return VirtoolDatabase(db_name(), db_connection_string())
 
 
 @fixture
