@@ -19,20 +19,10 @@ def sample_path(data_path, sample_id):
 
 
 @fixture
-def get_params(db, sample_id):
+async def document(db, sample_id):
     return await db.samples.find_one(sample_id)
 
 
 @fixture
-def params(job_args, get_params, sample_path, sample_id):
-    params = dict(job_args)
-
-    params.update({
-        "sample_id": sample_id,
-        "sample_path": sample_path,
-        "document": get_params,
-        "files": get_params["files"],
-        "paired": get_params["paired"]
-    })
-
-    return params
+def params(job_args):
+    return dict(job_args)

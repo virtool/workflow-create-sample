@@ -2,21 +2,26 @@ import os
 import shutil
 
 from virtool_workflow import startup, step, cleanup
-from virtool_workflow.execute import run_in_executor
+import fixtures
 import virtool_core.samples.utils
 
 import utils
 
 
 @startup
-async def check_db(params, temp_path):
+async def check_db(params, document, sample_id, sample_path, temp_path):
     """
-    Instantiates params fixture.
+    Updates params fixture.
 
     """
     temp_sample_path = temp_path / params["sample_id"]
 
     params.update({
+        "sample_id": sample_id,
+        "sample_path": sample_path,
+        "document": document,
+        "files": document["files"],
+        "paired": document["paired"],
         "temp_sample_path": temp_sample_path,
         "fastqc_path": temp_sample_path / "fastqc"
     })
