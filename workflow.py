@@ -9,25 +9,6 @@ import utils
 
 
 @startup
-async def check_db(params, document, sample_id, sample_path, temp_path):
-    """
-    Updates params fixture.
-
-    """
-    temp_sample_path = temp_path / params["sample_id"]
-
-    params.update({
-        "sample_id": sample_id,
-        "sample_path": sample_path,
-        "document": document,
-        "files": document["files"],
-        "paired": document["paired"],
-        "temp_sample_path": temp_sample_path,
-        "fastqc_path": temp_sample_path / "fastqc"
-    })
-
-
-@step
 async def make_sample_dir(params, run_in_executor):
     """
     Make a data directory for the sample and a subdirectory for analyses. Read files, quality data from FastQC, and
