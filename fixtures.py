@@ -1,6 +1,7 @@
 from virtool_workflow import fixture
 from virtool_workflow_runtime.config.configuration import db_name, db_connection_string
 from virtool_workflow_runtime.db import VirtoolDatabase
+from virtool_workflow.storage.paths import data_path, temp_path
 
 
 @fixture
@@ -10,7 +11,7 @@ def db():
 
 @fixture
 def sample_id(job_document):
-    return job_document["sample_id"]
+    return job_document["args"]["sample_id"]
 
 
 @fixture
