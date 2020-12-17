@@ -2,7 +2,6 @@ import os
 import shutil
 
 from virtool_workflow import startup, step, cleanup
-import fixtures
 import virtool_core.samples.utils
 
 import utils
@@ -11,8 +10,8 @@ import utils
 @startup
 async def make_sample_dir(params, run_in_executor):
     """
-    Make a data directory for the sample and a subdirectory for analyses. Read files, quality data from FastQC, and
-    analysis data will be stored here.
+    Make a data directory for the sample and a subdirectory for analyses. Read files, quality data from FastQC,
+    and analysis data will be stored here.
 
     """
     analysis_path = params["temp_sample_path"] / "analysis"
@@ -108,7 +107,7 @@ async def upload(params, run_in_executor):
 
 @step
 async def clean_watch(params, db):
-    """ Remove the original read files from the files directory """
+    """Remove the original read files from the files directory"""
     file_ids = [f["id"] for f in params["files"]]
     await db.files.delete_many({"_id": {"$in": file_ids}})
 
