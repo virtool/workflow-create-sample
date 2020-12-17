@@ -1,7 +1,7 @@
 from pathlib import Path
 from setuptools import setup, find_packages
 
-AUTHORS = ["Ian Boyes", "Blake Smith"]
+AUTHORS = ["Jake Alexander"]
 
 CLASSIFIERS = [
     "Topic :: Software Development :: Libraries",
