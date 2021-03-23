@@ -7,19 +7,6 @@ import virtool_core.samples.utils
 import utils
 
 
-@startup
-async def make_sample_dir(params, run_in_executor):
-    """
-    Make a data directory for the sample and a subdirectory for analyses. Read files, quality data from FastQC,
-    and analysis data will be stored here.
-
-    """
-    analysis_path = params["temp_sample_path"] / "analysis"
-
-    await run_in_executor(os.makedirs, analysis_path)
-    await run_in_executor(os.makedirs, params["fastqc_path"])
-
-
 @step
 async def copy_files(params, data_path, run_in_executor, proc, db):
     """
