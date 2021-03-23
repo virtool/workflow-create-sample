@@ -5,6 +5,7 @@ from virtool_workflow import startup, step, cleanup
 import virtool_core.samples.utils
 
 import utils
+from utils import parse_fastqc
 
 
 @step
@@ -46,12 +47,14 @@ async def copy_files(params, data_path, run_in_executor, proc, db):
 
 
 @step
-async def fastqc(params, run_subprocess, proc):
+async def fastqc(params, sample, run_in_executor, run_subprocess, proc, work_path):
     """
-    Runs FastQC on the renamed, trimmed read files.
+    Runs FastQC on reads.
 
     """
-    read_paths = virtool_core.samples.utils.join_read_path(params["temp_sample_path"], params["paired"])
+    fastqc_path = work_path / "fastqc"
+
+    read_paths = join_read_path(params["temp_sample_path"], sample.paired)
 
     await utils.run_fastqc(
         run_subprocess,
@@ -60,27 +63,13 @@ async def fastqc(params, run_subprocess, proc):
         params["fastqc_path"]
     )
 
-
-@step
-async def parse_fastqc(params, run_in_executor, db):
-    """
-    Capture the desired data from the FastQC output. The data is added to the samples database
-    in the main run() method
-
-
-    """
     qc = await run_in_executor(
-        utils.parse_fastqc,
+        parse_fastqc,
         params["fastqc_path"],
         params["temp_sample_path"]
     )
 
-    await db.samples.update_one({"_id": params["sample_id"]}, {
-        "$set": {
-            "quality": qc,
-            "ready": True
-        }
-    })
+
 
 
 @step
