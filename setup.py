@@ -11,7 +11,7 @@ CLASSIFIERS = [
 PACKAGES = find_packages(exclude="tests")
 
 INSTALL_REQUIRES = [
-    "virtool-workflow==0.2.0"
+    "virtool-workflow==0.4.0"
 ]
 
 setup(
