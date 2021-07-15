@@ -36,6 +36,15 @@ async def download_raw_files(
 
 
 @step
+async def upload_read_files(sample: Sample, sample_provider: SampleProvider):
+    """Upload the read files."""
+    await sample_provider.upload(sample.left)
+    if sample.paired:
+        await sample_provider.upload(sample.right)
+
+
+
+@step
 async def run_fastqc(
     fastqc,
     sample: Sample,
