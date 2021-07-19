@@ -11,6 +11,7 @@ python = "^3.8"
 virtool-workflow = {git = "https://github.com/virtool/virtool-workflow", rev = "develop"}
 
 [tool.poetry.dev-dependencies]
+autopep8 = "^1.5.7"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

@@ -36,15 +36,6 @@ async def download_raw_files(
 
 
 @step
-async def upload_read_files(sample: Sample, sample_provider: SampleProvider):
-    """Upload the read files."""
-    await sample_provider.upload(sample.left)
-    if sample.paired:
-        await sample_provider.upload(sample.right)
-
-
-
-@step
 async def run_fastqc(
     fastqc,
     sample: Sample,
@@ -64,12 +55,19 @@ async def run_fastqc(
 
 
 @step
+async def upload_read_files(sample: Sample, sample_provider: SampleProvider):
+    """Upload the read files."""
+    await sample_provider.upload(sample.left)
+    if sample.paired:
+        await sample_provider.upload(sample.right)
+
+
+@step
 async def upload_quality(sample_provider: SampleProvider, quality: dict):
     """
     Upload the resulting quality to the sample record.
     """
     await sample_provider.finalize(quality)
-
 
 
 @hooks.on_failure
@@ -81,8 +79,3 @@ async def delete_sample(sample_provider: SampleProvider):
     :type sample_provider: SampleProvider
     """
     await sample_provider.delete()
-
-
-
-
-
