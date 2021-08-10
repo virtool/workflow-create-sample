@@ -6,8 +6,6 @@ from fixtures import fixture
 from virtool_workflow import hooks, step
 from virtool_workflow.api.samples import SampleProvider
 
-__package__ = "vt_workflow_create_sample"
-
 
 @fixture
 def intermediate():
