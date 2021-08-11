@@ -18,9 +18,7 @@ async def download_raw_files(
     sample_provider: SampleProvider,
     input_files: Dict[str, Path],
 ):
-    Download the read files which were uploaded by the user and
-    set the `sample.path` accordingly.
-    """
+    """Download the read files which were uploaded by the user."""
     left = input_files.get("reads_1.fq.gz")
 
     intermediate.sample = await sample_provider.get()
