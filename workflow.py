@@ -18,7 +18,6 @@ async def download_raw_files(
     sample_provider: SampleProvider,
     input_files: Dict[str, Path],
 ):
-    """
     Download the read files which were uploaded by the user and
     set the `sample.path` accordingly.
     """
