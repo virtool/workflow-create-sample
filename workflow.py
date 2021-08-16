@@ -1,6 +1,6 @@
 from pathlib import Path
 from types import SimpleNamespace
-from typing import Dict, List
+from typing import Dict
 
 from fixtures import fixture
 from virtool_workflow import hooks, step
@@ -34,7 +34,7 @@ async def run_fastqc(
 
 
 @step
-async def upload_read_files(intermediate, sample_provider, read_files):
+async def upload_read_files(sample_provider, read_files):
     """Upload the read files."""
     for file in read_files:
         await sample_provider.upload(file)
