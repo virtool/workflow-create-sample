@@ -1,6 +1,6 @@
 from pathlib import Path
 from types import SimpleNamespace
-from typing import Dict
+from typing import Dict, List
 
 from fixtures import fixture
 from virtool_workflow import hooks, step
@@ -11,15 +11,21 @@ from virtool_workflow.api.samples import SampleProvider
 def intermediate():
     return SimpleNamespace()
 
+@fixture
+def read_files(input_files: Dict[str, Path]):
+    return [
+        file.rename(f"reads_{n}.fq.gz")
+        for file, n in zip(input_files.values(), (1, 2))
+    ]
 
 @step
 async def download_raw_files(
     intermediate,
     sample_provider: SampleProvider,
-    input_files: Dict[str, Path],
+    read_files: List[Path]
 ):
     """Download the read files which were uploaded by the user."""
-    left = input_files.get("reads_1.fq.gz")
+    left = read_files[0]
 
     intermediate.sample = await sample_provider.get()
 
@@ -40,7 +46,7 @@ async def run_fastqc(
     """
     read_paths = [intermediate.sample.path/"reads_1.fq.gz"]
     if intermediate.sample.paired:
-        read_paths.append(intermediate.sample.path/"reads_1.fq.gz")
+        read_paths.append(intermediate.sample.path/"reads_2.fq.gz")
 
     intermediate.quality = await fastqc(read_paths)
 
@@ -52,7 +58,7 @@ async def upload_read_files(intermediate, sample_provider: SampleProvider):
     """Upload the read files."""
     await sample_provider.upload(intermediate.sample.path/"reads_1.fq.gz")
     if intermediate.sample.paired:
-        await sample_provider.upload(intermediate.sample.right/"reads_2.fq.gz")
+        await sample_provider.upload(intermediate.sample.path/"reads_2.fq.gz")
 
 
 @step
