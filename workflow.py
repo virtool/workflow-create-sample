@@ -19,47 +19,25 @@ def read_files(input_files: Dict[str, Path]):
     ]
 
 @step
-async def download_raw_files(
-    intermediate,
-    sample_provider: SampleProvider,
-    read_files: List[Path]
-):
-    """Download the read files which were uploaded by the user."""
-    left = read_files[0]
-
-    intermediate.sample = await sample_provider.get()
-
-    # Set the intermediate.sample path to be the download path
-    intermediate.sample.path = left.parent
-
-    return "Raw reads for intermediate.sample {sample.id} collected."
-
-
-@step
 async def run_fastqc(
     fastqc,
     intermediate,
+    read_files,
 ):
     """
     Run `fastqc` on the read files. Parse the output
     into a dictionary and add it to the scope.
     """
-    read_paths = [intermediate.sample.path/"reads_1.fq.gz"]
-    if intermediate.sample.paired:
-        read_paths.append(intermediate.sample.path/"reads_2.fq.gz")
-
-    intermediate.quality = await fastqc(read_paths)
+    intermediate.quality = await fastqc(read_files)
 
     return "Fastqc run completed."
 
 
 @step
-async def upload_read_files(intermediate, sample_provider: SampleProvider):
+async def upload_read_files(intermediate, sample_provider, read_files):
     """Upload the read files."""
-    await sample_provider.upload(intermediate.sample.path/"reads_1.fq.gz")
-    if intermediate.sample.paired:
-        await sample_provider.upload(intermediate.sample.path/"reads_2.fq.gz")
-
+    for file in read_files:
+        await sample_provider.upload(file)
 
 @step
 async def upload_quality(sample_provider: SampleProvider, intermediate):
