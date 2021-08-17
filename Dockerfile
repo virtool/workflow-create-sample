@@ -1,4 +1,4 @@
-FROM virtool/workflow:latest
+FROM virtool/workflow:nightly
 
 WORKDIR /app
 
