@@ -17,7 +17,7 @@ jobs:
         with:
           node-version: 14
       - name: Install semantic-release
-        run: npm i semantic-release@v18.0.0
+        run: npm i semantic-release@v18.0.0 conventional-changelog-conventionalcommits@4.6.1
       - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
