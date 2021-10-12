@@ -12,10 +12,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Setup semantic-release
+      - name: Setup NodeJS
         uses: actions/setup-node@v1
         with:
           node-version: 12
+      - name: Install semantic-release
         run: npm i semantic-release@v18.0.0
       - name: Release
         env:
