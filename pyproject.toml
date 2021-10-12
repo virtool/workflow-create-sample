@@ -2,7 +2,7 @@
 name = "vt-workflow-create-sample"
 version = "0.1.0"
 description = "A workflow for creating new samples in Virtool."
-authors = ["Jake Alexander, Ian Boyes, Blake Smith"]
+authors = ["Jake Alexander", "Ian Boyes", "Blake Smith"]
 license = "MIT"
 readme = "README.md"
 
