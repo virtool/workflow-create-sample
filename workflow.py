@@ -8,7 +8,7 @@ from virtool_workflow.api.samples import SampleProvider
 
 
 @fixture
-def intermediate():
+def intermediate() -> SimpleNamespace:
     return SimpleNamespace()
 
 
@@ -23,7 +23,7 @@ def read_files(input_files: Dict[str, Path]):
 @step
 async def run_fastqc(
     fastqc,
-    intermediate,
+    intermediate: SimpleNamespace,
     read_files,
 ):
     """Run `fastqc` on the read files. Parse the output into a dictionary and add it to the scope."""
@@ -33,14 +33,14 @@ async def run_fastqc(
 
 
 @step
-async def upload_read_files(sample_provider, read_files):
+async def upload_read_files(sample_provider: SampleProvider, read_files):
     """Upload the read files."""
     for file in read_files:
         await sample_provider.upload(file)
 
 
 @step
-async def upload_quality(sample_provider: SampleProvider, intermediate):
+async def upload_quality(sample_provider: SampleProvider, intermediate: SimpleNamespace):
     """Upload the resulting quality to the sample record."""
     await sample_provider.finalize(intermediate.quality)
 
