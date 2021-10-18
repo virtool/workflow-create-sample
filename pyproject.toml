@@ -8,7 +8,7 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.8"
-virtool-workflow = {git = "https://github.com/virtool/virtool-workflow", rev = "develop"}
+virtool-workflow = "^1.0.0"
 
 [tool.poetry.dev-dependencies]
 autopep8 = "^1.5.7"
