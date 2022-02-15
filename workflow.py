@@ -26,22 +26,25 @@ async def run_fastqc(
     intermediate: SimpleNamespace,
     read_files,
 ):
-    """Run `fastqc` on the read files. Parse the output into a dictionary and add it to the scope."""
-    intermediate.quality = await fastqc(read_files)
+    """
+    Run `fastqc` on the read files.
 
-    return "Fastqc run completed."
+    Parse the output into a dictionary and add it to the scope.
+    """
+    intermediate.quality = await fastqc(read_files)
 
 
 @step
-async def upload_read_files(sample_provider: SampleProvider, read_files):
-    """Upload the read files."""
+async def finalize(intermediate: SimpleNamespace, sample_provider: SampleProvider, read_files):
+    """
+    Save the sample data in Virtool.
+
+    * Upload the read files to the sample file endpoints.
+    * POST the JSON quality data to sample endpoint.
+    """
     for file in read_files:
         await sample_provider.upload(file)
 
-
-@step
-async def upload_quality(sample_provider: SampleProvider, intermediate: SimpleNamespace):
-    """Upload the resulting quality to the sample record."""
     await sample_provider.finalize(intermediate.quality)
 
 
