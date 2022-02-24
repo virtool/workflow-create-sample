@@ -1,4 +1,4 @@
-FROM virtool/workflow:2.1.0
+FROM virtool/workflow:2.1.1
 
 WORKDIR /app
 
