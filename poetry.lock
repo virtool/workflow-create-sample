@@ -254,7 +254,7 @@ pydantic = ">=1.8.2,<2.0.0"
 
 [[package]]
 name = "virtool-workflow"
-version = "2.1.1"
+version = "2.1.2"
 description = "A framework for developing bioinformatics workflows for Virtool."
 category = "main"
 optional = false
@@ -696,8 +696,8 @@ virtool-core = [
     {file = "virtool_core-0.4.0-py3-none-any.whl", hash = "sha256:3fd38d8d97c86ded02c1a9d3cfe770d459195084caba0223c6f247bbe8acafcc"},
 ]
 virtool-workflow = [
-    {file = "virtool-workflow-2.1.1.tar.gz", hash = "sha256:d5a4881007adee762518ac07dd0601535bc28b0c7c65ce85aad4f010edbfb309"},
-    {file = "virtool_workflow-2.1.1-py3-none-any.whl", hash = "sha256:f6d3a72ea9001cff1baef383e013a3341eab67d348bc313fb9a3799e7414b8da"},
+    {file = "virtool-workflow-2.1.2.tar.gz", hash = "sha256:957722214cbcb4cb49f59de0f382b5ead3a03eb9afd23927d3e890d710a49946"},
+    {file = "virtool_workflow-2.1.2-py3-none-any.whl", hash = "sha256:c772c493607ec082de83126ad5e3d40a7283c30fbade2a6d46d7128777593414"},
 ]
 yarl = [
     {file = "yarl-1.7.2-cp310-cp310-macosx_10_9_universal2.whl", hash = "sha256:f2a8508f7350512434e41065684076f640ecce176d262a7d54f0da41d99c5a95"},
