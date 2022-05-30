@@ -20,7 +20,7 @@ def read_files(input_files: Dict[str, Path]):
     ]
 
 
-@step
+@step(name="Run FastQC")
 async def run_fastqc(
     fastqc,
     intermediate: SimpleNamespace,
