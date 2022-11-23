@@ -7,8 +7,9 @@ license = "MIT"
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.8"
-virtool-workflow = "^4.2.1"
+python = "^3.10"
+virtool-workflow = "^5.0.0"
+pyfixtures = "^1.1.0"
 
 [tool.poetry.dev-dependencies]
 autopep8 = "^1.5.7"
