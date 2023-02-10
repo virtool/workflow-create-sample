@@ -13,6 +13,5 @@ def intermediate() -> SimpleNamespace:
 @fixture
 def read_files(input_files: Dict[str, Path]):
     return [
-        file.rename(f"reads_{n}.fq.gz")
-        for file, n in zip(input_files.values(), (1, 2))
+        file.rename(f"reads_{n}.fq.gz") for file, n in zip(input_files.values(), (1, 2))
     ]

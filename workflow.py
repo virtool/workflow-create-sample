@@ -19,7 +19,9 @@ async def run_fastqc(
 
 
 @step
-async def finalize(intermediate: SimpleNamespace, sample_provider: SampleProvider, read_files):
+async def finalize(
+    intermediate: SimpleNamespace, sample_provider: SampleProvider, read_files
+):
     """
     Save the sample data in Virtool.
 
