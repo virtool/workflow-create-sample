@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "vt-workflow-create-sample"
+name = "workflow-create-sample"
 version = "0.0.0"
 description = "A workflow for creating new samples in Virtool."
 authors = ["Jake Alexander", "Ian Boyes", "Blake Smith"]
@@ -7,14 +7,13 @@ license = "MIT"
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.10"
-virtool-workflow = "^5.0.0"
+python = "~3.10"
+virtool-workflow = "^5.4.0"
 pyfixtures = "^1.1.0"
-black = "^23.1.0"
-pre-commit = "^3.0.4"
 
-[tool.poetry.dev-dependencies]
-autopep8 = "^1.5.7"
+[tool.poetry.group.dev.dependencies]
+black = "^23.7.0"
+pre-commit = "^3.4.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
