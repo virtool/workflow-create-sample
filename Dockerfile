@@ -1,4 +1,3 @@
-FROM ghcr.io/virtool/workflow:5.4.0
+FROM ghcr.io/virtool/workflow:5.4.2
 WORKDIR /app
-COPY workflow.py /app/workflow.py
-COPY fixtures.py /app/fixtures.py
+COPY fixtures.py workflow.py ./
