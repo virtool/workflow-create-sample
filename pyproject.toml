@@ -8,7 +8,7 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "~3.10"
-virtool-workflow = "^5.4.2"
+virtool-workflow = "^6.0.0a1"
 pyfixtures = "^1.1.0"
 
 [tool.poetry.group.dev.dependencies]
