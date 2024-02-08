@@ -16,7 +16,7 @@ RUN chmod ugo+x /opt/fastqc/fastqc && \
     ln -fs /opt/fastqc/fastqc /usr/local/bin/fastqc
 RUN curl -sSL https://install.python-poetry.org | python -
 ENV PATH="/root/.local/bin:${PATH}"
-COPY pyproject.toml poetry.lock workflow.py ./
+COPY pyproject.toml poetry.lock workflow.py VERSION* ./
 RUN poetry install
 RUN poetry export > requirements.txt
 RUN pip install -r requirements.txt
