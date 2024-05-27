@@ -1,22 +1,23 @@
-FROM python:3.10-buster as jre
+FROM python:3.12-bookworm as build
+WORKDIR /app
+RUN curl -sSL https://install.python-poetry.org | python -
+ENV PATH="/root/.local/bin:${PATH}" \
+    POETRY_CACHE_DIR='/tmp/poetry_cache' \
+    POETRY_NO_INTERACTION=1 \
+    POETRY_VIRTUALENVS_IN_PROJECT=1 \
+    POETRY_VIRTUALENVS_CREATE=1
+COPY pyproject.toml poetry.lock ./
+RUN poetry install --without dev --no-root
+
+FROM python:3.12-bookworm as base
+WORKDIR /app
 RUN apt-get update && \
     apt-get install -y --no-install-recommends default-jre && \
     rm -rf /var/lib/apt/lists/* && \
     apt-get clean
-
-FROM python:3.10-buster as poetry
-RUN curl -sSL https://install.python-poetry.org | python -
-ENV PATH="/root/.local/bin:${PATH}"
-COPY pyproject.toml poetry.lock workflow.py ./
-RUN poetry install
-
-FROM jre as base
 COPY --from=ghcr.io/virtool/workflow-tools:2.0.1 /opt/fastqc /opt/fastqc
-RUN chmod ugo+x /opt/fastqc/fastqc && \
-    ln -fs /opt/fastqc/fastqc /usr/local/bin/fastqc
-RUN curl -sSL https://install.python-poetry.org | python -
-ENV PATH="/root/.local/bin:${PATH}"
-COPY pyproject.toml poetry.lock workflow.py VERSION* ./
-RUN poetry install
-RUN poetry export > requirements.txt
-RUN pip install -r requirements.txt
+ENV VIRTUAL_ENV=/app/.venv \
+    PATH="/app/.venv/bin/:/opt/fastqc:${PATH}"
+RUN chmod ugo+x /opt/fastqc/fastqc
+COPY --from=build /app/.venv /app/.venv
+COPY workflow.py VERSION* ./
