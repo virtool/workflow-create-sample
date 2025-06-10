@@ -30,6 +30,9 @@ jobs:
     name: release
     outputs:
       git-tag: ${{ steps.semantic.outputs.git-tag }}
+    permissions:
+      contents: read
+      packages: write
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout
