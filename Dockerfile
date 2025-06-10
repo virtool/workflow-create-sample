@@ -1,4 +1,4 @@
-FROM python:3.12.3-bookworm as build
+FROM python:3.12.3-bookworm AS build
 WORKDIR /app
 RUN curl -sSL https://install.python-poetry.org | python -
 ENV PATH="/root/.local/bin:${PATH}" \
@@ -9,7 +9,7 @@ ENV PATH="/root/.local/bin:${PATH}" \
 COPY pyproject.toml poetry.lock ./
 RUN poetry install --without dev --no-root
 
-FROM python:3.12.3-bookworm as base
+FROM python:3.12.3-bookworm AS base
 WORKDIR /app
 RUN apt-get update && \
     apt-get install -y --no-install-recommends default-jre && \
