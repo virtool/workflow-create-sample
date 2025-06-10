@@ -1,17 +1,22 @@
-[tool.poetry]
+[project]
 name = "workflow-create-sample"
 version = "0.0.0"
 description = "A workflow for creating new samples in Virtool."
-authors = ["Jake Alexander", "Ian Boyes", "Blake Smith"]
+authors = [
+    {name = "Ian Boyes"},
+    {name = "Jake Alexander"},
+    {name = "Blake Smith"},
+]
 license = "MIT"
 readme = "README.md"
+requires-python = ">=3.12.3,<3.13"
+
+[tool.poetry]
 package-mode = false
 
 [tool.poetry.dependencies]
-python = "~3.12"
-virtool-workflow = "^7.1.0"
 pyfixtures = "^1.1.0"
-setuptools = "^70.0.0"
+virtool-workflow = { git = "https://github.com/virtool/virtool-workflow.git", rev="7.1.4" }
 
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.4.5"
