@@ -61,7 +61,7 @@ jobs:
       run: echo ${{ needs.release.outputs.git-tag }} > VERSION
     - name: Update Version
       run: poetry version ${{ needs.release.outputs.git-tag }}
-    - uses: docker/login-action@v1
+    - uses: docker/login-action@v3
       with:
         registry: ${{ env.REGISTRY }}
         username: ${{ github.actor }}
