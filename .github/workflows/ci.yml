@@ -30,9 +30,6 @@ jobs:
     name: release
     outputs:
       git-tag: ${{ steps.semantic.outputs.git-tag }}
-    permissions:
-      contents: read
-      packages: write
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout
@@ -51,6 +48,9 @@ jobs:
   ghcr:
     runs-on: ubuntu-24.04
     if: github.repository_owner == 'Virtool' && github.event_name == 'push' && needs.release.outputs.git-tag != ''
+    permissions:
+      contents: read
+      packages: write
     needs: [release]
     steps:
     - name: Checkout
