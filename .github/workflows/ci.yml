@@ -8,16 +8,16 @@ on:
 jobs:
   release:
     name: release
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       - name: Setup NodeJS
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v4
         with:
-          node-version: 14
+          node-version: 22
       - name: Install semantic-release
-        run: npm i semantic-release@v18.0.0 conventional-changelog-conventionalcommits@4.6.1
+        run: npm i semantic-release@v24.2.5 conventional-changelog-conventionalcommits@9.0.0
       - name: Release
         env:
           GITHUB_USERNAME: ${{ secrets.GH_USERNAME }}
