@@ -9,13 +9,13 @@ env:
 
 jobs:
   ghcr:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     permissions:
       contents: read
       packages: write
     if: github.repository_owner == 'Virtool'
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
     - uses: snok/install-poetry@v1
     - name: Write VERSION file
       run: echo ${{ github.event.release.tag_name }} > VERSION
