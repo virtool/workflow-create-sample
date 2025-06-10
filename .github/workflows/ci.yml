@@ -17,9 +17,43 @@ jobs:
         with:
           node-version: 22
       - name: Install semantic-release
-        run: npm i semantic-release@v24.2.5 conventional-changelog-conventionalcommits@9.0.0
-      - name: Release
+        run: npm i semantic-release@v24.2.5 @semantic-release/exec@v7.1.0 conventional-changelog-conventionalcommits@9.0.0
+      - name: Run semantic-release
+        id: release
         env:
-          GITHUB_USERNAME: ${{ secrets.GH_USERNAME }}
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: npx semantic-release
+  ghcr:
+    runs-on: ubuntu-24.04
+    if: github.repository_owner == 'Virtool' && github.event_name == 'push' && needs.release.outputs.git-tag != ''
+    needs: [release]
+    permissions:
+      contents: read
+      packages: write
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        ref: ${{ steps.release.outputs.git-tag }}
+    - uses: snok/install-poetry@v1
+    - name: Write VERSION file
+      run: echo ${{ steps.release.outputs.git-tag }} > VERSION
+    - name: Update Version
+      run: poetry version ${{ steps.release.outputs.git-tag }}
+    - uses: docker/login-action@v1
+      with:
+        registry: ${{ env.REGISTRY }}
+        username: ${{ secrets.GH_USERNAME }}
+        password: ${{ secrets.GH_TOKEN }}
+    - name: Extract Metadata
+      id: meta
+      uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
+      with:
+        images: ${{ env.REGISTRY }}/virtool/create-sample
+    - name: Build and Push
+      uses: docker/build-push-action@v2
+      with:
+        context: .
+        push: true
+        tags: ${{ steps.meta.outputs.tags }}
+        labels: ${{ steps.meta.outputs.labels }}

@@ -1,15 +1,6 @@
 {
   "branches": [
-    "+([0-9])?(.{+([0-9]),x}).x",
-    "main",
-    {
-      "name": "beta",
-      "prerelease": true
-    },
-    {
-      "name": "alpha",
-      "prerelease": true
-    }
+    "main"
   ],
   "plugins": [
     ["@semantic-release/commit-analyzer", {
@@ -20,7 +11,13 @@
     },
     ["@semantic-release/github", {
       "failComment": false
-    }]
+    }],
+          [
+         "@semantic-release/exec",
+         {
+            "successCmd": "echo \"git-tag=${nextRelease.gitTag}\" >> $GITHUB_OUTPUT"
+         }
+      ]
   ],
   "repositoryUrl": "https://github.com/virtool/workflow-create-sample.git",
   "tagFormat": "${version}"
