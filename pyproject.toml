@@ -16,7 +16,7 @@ package-mode = false
 
 [tool.poetry.dependencies]
 pyfixtures = "^1.1.0"
-virtool-workflow = { git = "https://github.com/virtool/virtool-workflow.git", rev="7.1.4" }
+virtool-workflow = ">=7.1.5"
 
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.11.13"
