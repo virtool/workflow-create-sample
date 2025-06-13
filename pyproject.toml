@@ -19,7 +19,7 @@ pyfixtures = "^1.1.0"
 virtool-workflow = { git = "https://github.com/virtool/virtool-workflow.git", rev="7.1.4" }
 
 [tool.poetry.group.dev.dependencies]
-ruff = "^0.4.5"
+ruff = "^0.11.13"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
