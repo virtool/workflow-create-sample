@@ -10,14 +10,16 @@ on:
 
   workflow_dispatch:
 
+vars:
+  UBUNTU_VERSION: ubuntu-24.04
+
 env:
   REGISTRY: ghcr.io
-  UBUNTU_VERSION: ubuntu-24.04
 
 jobs:
   ruff-format:
     name: Ruff / Format
-    runs-on: ${{ env.UBUNTU_VERSION }}
+    runs-on: ${{ vars.UBUNTU_VERSION }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -30,7 +32,7 @@ jobs:
 
   ruff-lint:
     name: Ruff / Lint
-    runs-on: ${{ env.UBUNTU_VERSION }}
+    runs-on: ${{ vars.UBUNTU_VERSION }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -43,7 +45,7 @@ jobs:
 
   build:
     name: Build
-    runs-on: ${{ env.UBUNTU_VERSION }}
+    runs-on: ${{ vars.UBUNTU_VERSION }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -63,7 +65,7 @@ jobs:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     outputs:
       git-tag: ${{ steps.semantic.outputs.git-tag }}
-    runs-on: ${{ env.UBUNTU_VERSION }}
+    runs-on: ${{ vars.UBUNTU_VERSION }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -80,7 +82,7 @@ jobs:
         run: npx semantic-release
   ghcr:
     name: Publish / GHCR
-    runs-on: ${{ env.UBUNTU_VERSION }}
+    runs-on: ${{ vars.UBUNTU_VERSION }}
     if: |
       github.repository_owner == 'Virtool' &&
       github.event_name == 'push' &&
