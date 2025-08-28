@@ -3,10 +3,10 @@ from pathlib import Path
 from types import SimpleNamespace
 
 from pyfixtures import fixture
-from virtool_workflow import hooks, step
-from virtool_workflow.analysis.fastqc import FastQCRunner
-from virtool_workflow.analysis.utils import ReadPaths
-from virtool_workflow.data.samples import WFNewSample
+from virtool.quality.fastqc import parse_fastqc
+from virtool.workflow import hooks, step, RunSubprocess
+from virtool.workflow.analysis import ReadPaths
+from virtool.workflow.data.samples import WFNewSample
 
 
 @fixture
@@ -24,9 +24,9 @@ def read_paths(new_sample: WFNewSample) -> ReadPaths:
 
 @step(name="Run FastQC")
 async def run_fastqc(
-    fastqc: FastQCRunner,
     intermediate: SimpleNamespace,
     read_paths: ReadPaths,
+    run_subprocess: RunSubprocess,
     work_path: Path,
 ):
     """
@@ -34,9 +34,20 @@ async def run_fastqc(
 
     Parse the output into a dictionary and add it to the scope.
     """
-    output_path = work_path / "fastqc"
-    await asyncio.to_thread(output_path.mkdir)
-    intermediate.quality = await fastqc(read_paths, output_path)
+    command = [
+        "fastqc",
+        "-f",
+        "fastq",
+        "-o",
+        str(work_path),
+        "--extract",
+        *[str(path) for path in read_paths],
+    ]
+
+    await run_subprocess(command)
+
+    intermediate.quality = await asyncio.to_thread(parse_fastqc, work_path)
+
 
 
 @step
@@ -51,9 +62,9 @@ async def finalize(
     """
     for i, path in enumerate(read_paths):
         new_path = await asyncio.to_thread(path.rename, f"reads_{i + 1}.fq.gz")
-        await new_sample.upload(new_path, "fastq")
+        await new_sample.upload(new_path)
 
-    await new_sample.finalize(intermediate.quality)
+    await new_sample.finalize(intermediate.quality.dict())
 
 
 @hooks.on_failure
