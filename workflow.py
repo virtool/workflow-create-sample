@@ -49,7 +49,6 @@ async def run_fastqc(
     intermediate.quality = await asyncio.to_thread(parse_fastqc, work_path)
 
 
-
 @step
 async def finalize(
     intermediate: SimpleNamespace, new_sample: WFNewSample, read_paths: ReadPaths
