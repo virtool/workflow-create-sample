@@ -1,8 +1,11 @@
 name: ci
 
+permissions:
+  contents: read
+
 on:
   push:
-    branches:
+    branches:`
       - "main"
   pull_request:
     branches:
@@ -10,16 +13,14 @@ on:
 
   workflow_dispatch:
 
-vars:
-  UBUNTU_VERSION: ubuntu-24.04
-
 env:
   REGISTRY: ghcr.io
+  RUNS_ON: ubuntu-24.04
 
 jobs:
   ruff-format:
     name: Ruff / Format
-    runs-on: ${{ vars.UBUNTU_VERSION }}
+    runs-on: "${{ env.RUNS_ON }}"
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -32,7 +33,7 @@ jobs:
 
   ruff-lint:
     name: Ruff / Lint
-    runs-on: ${{ vars.UBUNTU_VERSION }}
+    runs-on: "${{ env.RUNS_ON }}"
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -45,7 +46,7 @@ jobs:
 
   build:
     name: Build
-    runs-on: ${{ vars.UBUNTU_VERSION }}
+    runs-on: "${{ env.RUNS_ON }}"
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -65,7 +66,7 @@ jobs:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     outputs:
       git-tag: ${{ steps.semantic.outputs.git-tag }}
-    runs-on: ${{ vars.UBUNTU_VERSION }}
+    runs-on: "${{ env.RUNS_ON }}"
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -82,7 +83,7 @@ jobs:
         run: npx semantic-release
   ghcr:
     name: Publish / GHCR
-    runs-on: ${{ vars.UBUNTU_VERSION }}
+    runs-on: "${{ env.RUNS_ON }}"
     if: |
       github.repository_owner == 'Virtool' &&
       github.event_name == 'push' &&
