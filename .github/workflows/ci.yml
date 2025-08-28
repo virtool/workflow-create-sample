@@ -4,23 +4,53 @@ on:
   push:
     branches:
       - "main"
+  pull_request:
+    branches:
+      - "main"
 
   workflow_dispatch:
 
 env:
   REGISTRY: ghcr.io
+  UBUNTU_VERSION: ubuntu-24.04
 
 jobs:
+  ruff-format:
+    name: Ruff / Format
+    runs-on: ${{ env.UBUNTU_VERSION }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+      - name: Install dependencies
+        run: uv sync --dev
+      - name: Check formatting
+        run: uv run ruff format --check .
+
+  ruff-lint:
+    name: Ruff / Lint
+    runs-on: ${{ env.UBUNTU_VERSION }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+      - name: Install dependencies
+        run: uv sync --dev
+      - name: Run linting
+        run: uv run ruff check .
+
   build:
-    name: build
-    runs-on: ubuntu-24.04
+    name: Build
+    runs-on: ${{ env.UBUNTU_VERSION }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
       - name: Build Docker image
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: .
           push: false
@@ -29,10 +59,11 @@ jobs:
           cache-to: type=gha,mode=max
   release:
     needs: [build]
-    name: release
+    name: Publish / Release
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     outputs:
       git-tag: ${{ steps.semantic.outputs.git-tag }}
-    runs-on: ubuntu-24.04
+    runs-on: ${{ env.UBUNTU_VERSION }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -48,10 +79,12 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: npx semantic-release
   ghcr:
-    runs-on: ubuntu-24.04
+    name: Publish / GHCR
+    runs-on: ${{ env.UBUNTU_VERSION }}
     if: |
       github.repository_owner == 'Virtool' &&
-      (github.event_name == 'push' || github.event_name == 'workflow_dispatch') &&
+      github.event_name == 'push' &&
+      github.ref == 'refs/heads/main' &&
       needs.release.outputs.git-tag != ''
     needs: [release]
     steps:
@@ -59,11 +92,12 @@ jobs:
       uses: actions/checkout@v4
       with:
         ref: ${{ needs.release.outputs.git-tag }}
-    - uses: snok/install-poetry@v1
+    - name: Install uv
+      uses: astral-sh/setup-uv@v4
     - name: Write VERSION file
       run: echo ${{ needs.release.outputs.git-tag }} > VERSION
     - name: Update Version
-      run: poetry version ${{ needs.release.outputs.git-tag }}
+      run: uv version ${{ needs.release.outputs.git-tag }}
     - uses: docker/login-action@v3
       with:
         registry: ${{ env.REGISTRY }}
