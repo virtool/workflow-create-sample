@@ -21,4 +21,4 @@ dev = [
 ]
 
 [tool.uv.sources]
-virtool = { git = "https://github.com/virtool/virtool", tag = "31.11.1" }
+virtool = { git = "https://github.com/virtool/virtool", tag = "31.11.3" }
