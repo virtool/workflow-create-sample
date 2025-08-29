@@ -63,6 +63,8 @@ jobs:
   release:
     needs: [build]
     name: Publish / Release
+    permissions:
+      contents: write
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     outputs:
       git-tag: ${{ steps.semantic.outputs.git-tag }}
@@ -84,6 +86,8 @@ jobs:
   ghcr:
     name: Publish / GHCR
     runs-on: ubuntu-latest
+    permissions:
+      packages: write
     if: |
       github.repository_owner == 'Virtool' &&
       github.event_name == 'push' &&
