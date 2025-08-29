@@ -1,21 +1,19 @@
-FROM python:3.12.3-bookworm AS build
+FROM python:3.13-bookworm AS build
 WORKDIR /app
-RUN curl -sSL https://install.python-poetry.org | python -
-ENV PATH="/root/.local/bin:${PATH}" \
-    POETRY_CACHE_DIR='/tmp/poetry_cache' \
-    POETRY_NO_INTERACTION=1 \
-    POETRY_VIRTUALENVS_IN_PROJECT=1 \
-    POETRY_VIRTUALENVS_CREATE=1
-COPY pyproject.toml poetry.lock ./
-RUN poetry install --without dev --no-root
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+ENV UV_COMPILE_BYTECODE=1 \
+    UV_LINK_MODE=copy
+COPY pyproject.toml uv.lock ./
+RUN --mount=type=cache,target=/root/.cache/uv \
+    uv sync --locked --no-install-project --no-dev
 
-FROM python:3.12.3-bookworm AS base
+FROM python:3.13-bookworm AS base
 WORKDIR /app
 RUN apt-get update && \
     apt-get install -y --no-install-recommends default-jre && \
     rm -rf /var/lib/apt/lists/* && \
     apt-get clean
-COPY --from=ghcr.io/virtool/workflow-tools:2.0.1 /opt/fastqc /opt/fastqc
+COPY --from=ghcr.io/virtool/tools:1.1.0 /tools/fastqc/0.11.9/ /opt/fastqc
 ENV VIRTUAL_ENV=/app/.venv \
     PATH="/app/.venv/bin/:/opt/fastqc:${PATH}"
 RUN chmod ugo+x /opt/fastqc/fastqc
