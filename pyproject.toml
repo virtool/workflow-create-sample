@@ -5,20 +5,16 @@ description = "A workflow for creating new samples in Virtool."
 readme = "README.md"
 requires-python = ">=3.13.7,<3.14"
 authors = [
-    {name = "Ian Boyes"},
-    {name = "Jake Alexander"},
-    {name = "Blake Smith"},
+  { name = "Ian Boyes" },
+  { name = "Jake Alexander" },
+  { name = "Blake Smith" },
 ]
 license = "MIT"
 
-dependencies = [
-    "virtool",
-]
+dependencies = ["virtool"]
 
 [dependency-groups]
-dev = [
-    "ruff>=0.12.11",
-]
+dev = ["ruff>=0.12.11"]
 
 [tool.uv.sources]
-virtool = { git = "https://github.com/virtool/virtool", tag = "31.11.3" }
+virtool = { git = "https://github.com/virtool/virtool", tag = "33.3.7" }
