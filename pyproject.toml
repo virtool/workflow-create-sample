@@ -17,4 +17,4 @@ dependencies = ["virtool"]
 dev = ["ruff>=0.12.11"]
 
 [tool.uv.sources]
-virtool = { git = "https://github.com/virtool/virtool", tag = "36.15.1" }
+virtool = { git = "https://github.com/virtool/virtool", tag = "36.17.0" }
