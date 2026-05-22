@@ -4,6 +4,7 @@ from types import SimpleNamespace
 
 from pyfixtures import fixture
 from virtool.quality.fastqc import parse_fastqc
+from virtool.utils import compress_file, is_gzipped
 from virtool.workflow import hooks, step, RunSubprocess
 from virtool.workflow.analysis import ReadPaths
 from virtool.workflow.data.samples import WFNewSample
@@ -51,17 +52,25 @@ async def run_fastqc(
 
 @step
 async def finalize(
-    intermediate: SimpleNamespace, new_sample: WFNewSample, read_paths: ReadPaths
+    intermediate: SimpleNamespace,
+    new_sample: WFNewSample,
+    proc: int,
+    read_paths: ReadPaths,
 ):
     """
     Save the sample data in Virtool.
 
+    * Compress any uncompressed read files.
     * Upload the read files to the sample file endpoints.
     * POST the JSON quality data to sample endpoint.
     """
     for i, path in enumerate(read_paths):
-        new_path = await asyncio.to_thread(path.rename, f"reads_{i + 1}.fq.gz")
-        await new_sample.upload(new_path)
+        target = path.with_name(f"reads_{i + 1}.fq.gz")
+        if is_gzipped(path):
+            await asyncio.to_thread(path.rename, target)
+        else:
+            await asyncio.to_thread(compress_file, path, target, proc)
+        await new_sample.upload(target)
 
     await new_sample.finalize(intermediate.quality.dict())
 
