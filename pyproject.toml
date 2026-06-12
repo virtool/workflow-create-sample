@@ -14,7 +14,7 @@ license = "MIT"
 dependencies = ["virtool"]
 
 [dependency-groups]
-dev = ["ruff>=0.15.16"]
+dev = ["ruff>=0.15.17"]
 
 [tool.uv.sources]
 virtool = { git = "https://github.com/virtool/virtool", tag = "36.26.0" }
