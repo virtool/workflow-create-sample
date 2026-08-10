@@ -5,7 +5,7 @@ from types import SimpleNamespace
 from pyfixtures import fixture
 from virtool.quality.fastqc import parse_fastqc
 from virtool.utils import compress_file, is_gzipped
-from virtool.workflow import hooks, step, RunSubprocess
+from virtool.workflow import RunSubprocess, hooks, step
 from virtool.workflow.analysis import ReadPaths
 from virtool.workflow.data.samples import WFNewSample
 
